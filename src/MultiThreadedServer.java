@@ -1,7 +1,6 @@
 /**
  * Created by Michael on 2/23/2016.
  */
-
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
@@ -15,6 +14,9 @@ public class MultiThreadedServer implements Runnable {
 
     public MultiThreadedServer(int port) {
         this.serverPort = port;
+    }
+    public int getOpenPort(){
+        return serverPort;
     }
 
     public void run() {
@@ -60,9 +62,11 @@ public class MultiThreadedServer implements Runnable {
     private void openServerSocket() {
         try {
             this.serverSocket = new ServerSocket(this.serverPort);
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot open port 8080", e);
+           } catch (IOException e) {
+           // throw new RuntimeException("Cannot open port 8080", e);
+            this.serverPort++;
+            openServerSocket();
+
         }
     }
-
 }

@@ -5,12 +5,13 @@ public class Main {
 
     public static void main(String[] args)
     {
-        MultiThreadedServer server = new MultiThreadedServer(9001);
+        MultiThreadedServer server = new MultiThreadedServer(9000);
         new Thread(server).start();
-        String newServerMessage = "123456789'#CATS on Cats'#9090'#0'#100'#";
+
+        NetworkManager networkManager = new NetworkManager();
+        String newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());
         RedirectClient listServerComunicator = new RedirectClient();
         listServerComunicator.connectToRedirect(newServerMessage);
-
 
         try {
             Thread.sleep(20 * 1000);
