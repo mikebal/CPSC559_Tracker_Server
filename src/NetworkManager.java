@@ -9,12 +9,12 @@ public class NetworkManager {
 
     public String getIPaddress(){
         String IPaddress = "";
-    try {
-        InetAddress thisIp = InetAddress.getLocalHost();
-        IPaddress = thisIp.getHostAddress();
-        }
-    catch(Exception e) {
-        e.printStackTrace();
+        try {
+            InetAddress thisIp = InetAddress.getLocalHost();
+            IPaddress = thisIp.getHostAddress();
+            }
+        catch(Exception e) {
+            e.printStackTrace();
         }
         return IPaddress;
     }
