@@ -21,14 +21,14 @@ public class WorkerRunnable implements Runnable {
         try {
             InputStream input = clientSocket.getInputStream();
             OutputStream output = clientSocket.getOutputStream();
-            String recevedMSG = "";//input.read();
+            String receivedMSG = "";//input.read();
 
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         clientSocket.getInputStream()));
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
                         true);
-                recevedMSG = in.readLine();
+                receivedMSG = in.readLine();
             } catch (IOException e) {
                 System.out.println("Read failed");
                 System.exit(-1);
@@ -39,7 +39,7 @@ public class WorkerRunnable implements Runnable {
             output.write((trackerString).getBytes());
             output.close();
             input.close();
-            System.out.println(recevedMSG + "      " + time);
+            System.out.println(receivedMSG + "      " + time);
         } catch (IOException e) {
             //report exception somewhere.
             e.printStackTrace();
