@@ -4,11 +4,20 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
+import java.net.*;
 
 /**
  * Created by Michael on 2/23/2016.
  */
 public class RedirectClient {
+
+    int port;
+    String hostName;
+
+    public RedirectClient(String hostName, int port){
+        this.hostName = hostName;
+        this.port = port;
+    }
 
     public void connectToRedirect(String message){
         Socket clientSocket = null;
@@ -19,7 +28,7 @@ public class RedirectClient {
         try
         {
             //create a socket
-            clientSocket = new Socket("localhost", 9000);
+            clientSocket = new Socket(InetAddress.getByName(hostName), port);
             try
             {
                 //get the input and output streams
@@ -38,26 +47,8 @@ public class RedirectClient {
                 message_IN = in.nextLine();
                 System.out.print(message_IN);
 
-                //if(message_IN.equals("READY FOR SERVER INFO"))
+                out.println(message);
 
-                    out.println(message);
-
-                //   {
-
-             //   int serverCount = 0, count = 0;
-             //   System.out.println("Server " + count + ": ");
-             //   while(in.hasNextLine())
-             //   {
-              //      if(count == 5) {
-               //         serverCount++;
-              //          System.out.println("Server " + serverCount + ": ");
-
-                       // count = 0;
-                    //}
-                    //String line = in.nextLine();
-                    //count++;
-                    //System.out.println(line);
-                //}
             }
             finally
             {

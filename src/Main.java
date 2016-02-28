@@ -5,12 +5,15 @@ public class Main {
 
     public static void main(String[] args)
     {
+        String hostName = args[0]; 
+        int port = Integer.parseInt(args[1]);
+
         MultiThreadedServer server = new MultiThreadedServer(9000);
         new Thread(server).start();
 
         NetworkManager networkManager = new NetworkManager();
         String newServerMessage = networkManager.generateTrackerAdvertisement(server.getOpenPort());
-        RedirectClient listServerCommunicator = new RedirectClient();
+        RedirectClient listServerCommunicator = new RedirectClient(hostName, port);
         listServerCommunicator.connectToRedirect(newServerMessage);
 
         try {
