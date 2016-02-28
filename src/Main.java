@@ -9,9 +9,9 @@ public class Main {
         new Thread(server).start();
 
         NetworkManager networkManager = new NetworkManager();
-        String newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());
-        RedirectClient listServerComunicator = new RedirectClient();
-        listServerComunicator.connectToRedirect(newServerMessage);
+        String newServerMessage = networkManager.generateTrackerAdvertisement(server.getOpenPort());
+        RedirectClient listServerCommunicator = new RedirectClient();
+        listServerCommunicator.connectToRedirect(newServerMessage);
 
         try {
             Thread.sleep(20 * 1000);
