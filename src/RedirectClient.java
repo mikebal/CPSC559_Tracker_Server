@@ -33,31 +33,11 @@ public class RedirectClient {
             out.println("New Server");
 
             while(!in.hasNextLine());
-             //   System.out.println("Waiting...");
 
             message_IN = in.nextLine();
             System.out.print(message_IN);
 
-            //if(message_IN.equals("READY FOR SERVER INFO"))
-
                 out.println(message);
-
-            //   {
-
-         //   int serverCount = 0, count = 0;
-         //   System.out.println("Server " + count + ": ");
-         //   while(in.hasNextLine())
-         //   {
-          //      if(count == 5) {
-           //         serverCount++;
-          //          System.out.println("Server " + serverCount + ": ");
-
-                   // count = 0;
-                //}
-                //String line = in.nextLine();
-                //count++;
-                //System.out.println(line);
-            //}
         }
         finally
         {
