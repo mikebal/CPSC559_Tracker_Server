@@ -1,5 +1,6 @@
 /**
  * Created by Michael on 3/2/2016.
+ *
  */
 public class ClientObject {
     private String IP_Address;

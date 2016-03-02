@@ -11,8 +11,8 @@ public class Main {
 
         NetworkManager networkManager = new NetworkManager();
         String newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());
-        RedirectClient listServerComunicator = new RedirectClient();
-        listServerComunicator.connectToRedirect(newServerMessage);
+        RedirectClient listServerCommunicator = new RedirectClient();
+        listServerCommunicator.connectToRedirect(newServerMessage);
 
         try {
             Thread.sleep(20 * 1000);

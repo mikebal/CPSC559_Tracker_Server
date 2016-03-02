@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Michael on 3/2/2016.
+ *
  */
 public class FileObject {
     private String fileName;
