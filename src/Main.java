@@ -3,10 +3,11 @@
  */
 public class Main {
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws InterruptedException
     {
         MultiThreadedServer server = new MultiThreadedServer(9000);
         new Thread(server).start();
+        Thread.sleep(1000);
 
         NetworkManager networkManager = new NetworkManager();
         String newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());

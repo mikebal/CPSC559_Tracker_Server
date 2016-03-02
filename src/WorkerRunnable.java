@@ -26,9 +26,11 @@ public class WorkerRunnable implements Runnable {
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         clientSocket.getInputStream()));
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
-                        true);
-                recevedMSG = in.readLine();
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                while(!recevedMSG.equals("exit")) {
+                    recevedMSG = in.readLine();
+                    System.out.println(recevedMSG);
+                }
             } catch (IOException e) {
                 System.out.println("Read failed");
                 System.exit(-1);

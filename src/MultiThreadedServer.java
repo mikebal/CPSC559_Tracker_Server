@@ -66,7 +66,6 @@ public class MultiThreadedServer implements Runnable {
            // throw new RuntimeException("Cannot open port 8080", e);
             this.serverPort++;
             openServerSocket();
-
         }
     }
 }
