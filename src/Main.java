@@ -65,6 +65,7 @@ public class Main {
          *
          *  Once the server is running, the listServer is notified of the new server and its address and port
          */
+        newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());
         RedirectClient listServerCommunicator = new RedirectClient();
         listServerCommunicator.connectToRedirect(newServerMessage);
 
