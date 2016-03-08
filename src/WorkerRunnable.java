@@ -47,7 +47,7 @@ public class WorkerRunnable implements Runnable {
                 parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);  // Break up messages into commands separated by "'#"
                 clientID = new ClientObject(parsedInput[0], parsedInput[1]);
                 clientList.add(clientID);                   // Add the new client to the Client list.
-
+               // output.write("hello from server\n".getBytes());
                 while(!receivedMSG.equals("exit")) {
                     receivedMSG = in.readLine();
                     System.out.println(receivedMSG);

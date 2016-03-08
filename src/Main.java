@@ -12,7 +12,7 @@ public class Main {
         ArrayList<FileObject> fileList = new ArrayList<>();
         BackupComObject serverStateChanges = new BackupComObject();
         int startingPort = 9010;
-        boolean isPrimaryServerRunning = true;
+        boolean isPrimaryServerRunning = false;
 
         /**
          * server: The connection point clients to join the network
