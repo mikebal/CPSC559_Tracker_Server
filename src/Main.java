@@ -1,4 +1,6 @@
+
 import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created by Michael on 2/23/2016.
@@ -69,13 +71,18 @@ public class Main {
         listServerCommunicator.connectToRedirect(newServerMessage);
 
 
+        Updater updater = new Updater(2 * 1000);
+        updater.start();
+
         try {
             Thread.sleep(1000 * 1000);
             while(true);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         System.out.println("Stopping Server");
         server.stop();
+        updater.stop();
     }
 }
