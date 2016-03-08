@@ -1,11 +1,18 @@
 import java.util.*;
+import java.net.*;
+import java.io.*;
 
 public class Updater extends Thread
 {
-	int updateInterval;
+	public int updateInterval;
+	public BackupComObject update;
+	public ArrayList<ClientObject> serverList;
+	public ObjectOutputStream out = null;
 
-	public Updater(int updateInterval){
+	public Updater(int updateInterval, ArrayList<ClientObject> serverList, BackupComObject update){
 		this.updateInterval = updateInterval;
+		this.serverList = serverList;
+		this.update = update;
 	}
 
 	public void run(){
@@ -17,7 +24,19 @@ public class Updater extends Thread
 	/*to be completed*/
 	public void sendRecurringUpdate()
 	{
-		System.out.println("Sending update to all Trackers of my category");
+		try{
+			for(int i = 0; i < serverList.size(); i++)
+			{
+				Socket sock = new Socket(InetAddress.getByName(serverList.get(i).get_IP_Address()), serverList.get(i).getPort());
+				out = new ObjectOutputStream(sock.getOutputStream());	
+				out.writeObject(update);
+				out.flush();
+				sock.close();		
+			}
+			out.close();
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
 	}
-
 }

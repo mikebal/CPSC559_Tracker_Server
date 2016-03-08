@@ -17,6 +17,7 @@ public class MultiThreadedServer implements Runnable {
     private ArrayList<FileObject> fileList;
     private boolean isClientServer;
     private BackupComObject serverStatusChanges;
+    private Updater updater;
 
     public MultiThreadedServer(int port, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, boolean isClientServer, BackupComObject backupObject, ArrayList<ClientObject> serverList) {
         this.serverPort = port;
@@ -35,6 +36,8 @@ public class MultiThreadedServer implements Runnable {
         synchronized (this) {
             this.runningThread = Thread.currentThread();
         }
+        updater = new Updater(2 * 1000, serverList, serverStatusChanges);
+        updater.start();
         openServerSocket();
         while (!isStopped()) {
             Socket clientSocket;
@@ -74,6 +77,7 @@ public class MultiThreadedServer implements Runnable {
         this.isStopped = true;
         try {
             this.serverSocket.close();
+            updater.stop();
         } catch (IOException e) {
             throw new RuntimeException("Error closing server", e);
         }

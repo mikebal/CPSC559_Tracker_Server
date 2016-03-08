@@ -71,9 +71,6 @@ public class Main {
         listServerCommunicator.connectToRedirect(newServerMessage);
 
 
-        Updater updater = new Updater(2 * 1000);
-        updater.start();
-
         try {
             Thread.sleep(1000 * 1000);
             while(true);
@@ -83,6 +80,5 @@ public class Main {
 
         System.out.println("Stopping Server");
         server.stop();
-        updater.stop();
     }
 }

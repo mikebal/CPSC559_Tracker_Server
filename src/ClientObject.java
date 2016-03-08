@@ -23,4 +23,8 @@ public class ClientObject {
 
         return info;
     }
+
+    public int getPort(){
+        return Integer.parseInt(this.port);
+    }
 }

@@ -1,11 +1,13 @@
 import java.util.ArrayList;
+import java.io.*;
+import java.net.*;
 
 /**
  * Created by Michael on 3/5/2016.
  *
  * This may be a way to keep track of what changes other tracker servers need to updated on
  */
-public class BackupComObject {
+public class BackupComObject implements Serializable{
     private ArrayList<FileObject> newFileList;
     private ArrayList<FileObject> removedFiles;
     private ArrayList<ClientObject> disconnectedClients;
