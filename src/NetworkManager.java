@@ -20,16 +20,16 @@ public class NetworkManager {
     }
 
     public String generateTrackerAdvertisment(int openPort){
-        String advertisment = "";
+        String advertisement = "";
         String connectedPeers = "0";
         String maxPeers = "100";
-        advertisment += getIPaddress() + SPECIAL_SEPARATOR;
-        advertisment += getTrackerName() + SPECIAL_SEPARATOR;
-        advertisment += String.valueOf(openPort) + SPECIAL_SEPARATOR;
-        advertisment += connectedPeers + SPECIAL_SEPARATOR;
-        advertisment += maxPeers + SPECIAL_SEPARATOR;
+        advertisement += getIPaddress() + SPECIAL_SEPARATOR;
+        advertisement += getTrackerName() + SPECIAL_SEPARATOR;
+        advertisement += String.valueOf(openPort) + SPECIAL_SEPARATOR;
+        advertisement += connectedPeers + SPECIAL_SEPARATOR;
+        advertisement += maxPeers + SPECIAL_SEPARATOR;
 
-        return advertisment;
+        return advertisement;
     }
 
     public String getTrackerName(){

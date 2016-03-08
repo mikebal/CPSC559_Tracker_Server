@@ -4,6 +4,7 @@
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MultiThreadedServer implements Runnable {
 
@@ -11,9 +12,20 @@ public class MultiThreadedServer implements Runnable {
     protected ServerSocket serverSocket = null;
     protected boolean isStopped = false;
     protected Thread runningThread = null;
+    private ArrayList<ClientObject> clientList;
+    private ArrayList<ClientObject> serverList;
+    private ArrayList<FileObject> fileList;
+    private boolean isClientServer;
+    private BackupComObject serverStatusChanges;
 
-    public MultiThreadedServer(int port) {
+    public MultiThreadedServer(int port, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, boolean isClientServer, BackupComObject backupObject, ArrayList<ClientObject> serverList) {
         this.serverPort = port;
+        this.clientList = clientList;
+        this.fileList = fileList;
+        this.isClientServer = isClientServer;
+        this.serverStatusChanges = backupObject;
+        this.serverList = serverList;
+
     }
     public int getOpenPort(){
         return serverPort;
@@ -25,7 +37,7 @@ public class MultiThreadedServer implements Runnable {
         }
         openServerSocket();
         while (!isStopped()) {
-            Socket clientSocket = null;
+            Socket clientSocket;
             try {
                 clientSocket = this.serverSocket.accept();
             } catch (IOException e) {
@@ -36,10 +48,18 @@ public class MultiThreadedServer implements Runnable {
                 throw new RuntimeException(
                         "Error accepting client connection", e);
             }
-            new Thread(
-                    new WorkerRunnable(
-                            clientSocket, "Multithreaded Server")
-            ).start();
+            if(!isClientServer) {
+                new Thread(
+                        new WorkerRunnable(
+                                clientSocket, "Multithreaded Server", clientList, fileList, serverStatusChanges)
+                ).start();
+            }
+            else{
+                new Thread(
+                        new BackupServer(
+                                clientSocket, "Multithreaded Backup Server", clientList, fileList, serverStatusChanges, serverList)
+                ).start();
+            }
 
         }
         System.out.println("Server Stopped.");
