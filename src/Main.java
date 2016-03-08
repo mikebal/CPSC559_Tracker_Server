@@ -1,3 +1,5 @@
+import java.util.*;
+
 /**
  * Created by Michael on 2/23/2016.
  */
@@ -14,13 +16,18 @@ public class Main {
         RedirectClient listServerComunicator = new RedirectClient();
         listServerComunicator.connectToRedirect(newServerMessage);
 
+        Updater updater = new Updater(2 * 1000);
+        updater.start();
+
         try {
             Thread.sleep(20 * 1000);
             while(true);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         System.out.println("Stopping Server");
         server.stop();
+        updater.stop();
     }
 }
