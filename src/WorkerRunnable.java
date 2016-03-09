@@ -43,7 +43,7 @@ public class WorkerRunnable implements Runnable {
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         clientSocket.getInputStream()));
 
-                receivedMSG = in.readLine();                // Client should automatically send it's info to the server
+                receivedMSG = in.readLine();  System.out.println("_____ " + receivedMSG); while(receivedMSG == null);          // Client should automatically send it's info to the server
                 parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);  // Break up messages into commands separated by "'#"
                 clientID = new ClientObject(parsedInput[0], parsedInput[1]);
                 clientList.add(clientID);                   // Add the new client to the Client list.

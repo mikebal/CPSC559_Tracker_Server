@@ -29,10 +29,13 @@ public class Updater extends Thread
 			{
 				System.out.println("\n DEBUG" );
 				System.out.println(serverList.get(i).get_IP_Address() + " " + serverList.get(i).getPort());
-				Socket sock = new Socket(InetAddress.getByName(serverList.get(i).get_IP_Address()), serverList.get(i).getPort());
+				Socket sock = new Socket("localhost", 9010);
+				PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+				out.println("update");
+				//Socket sock = new Socket(InetAddress.getByName(serverList.get(i).get_IP_Address()), serverList.get(i).getPort());
 				//out = new ObjectOutputStream(sock.getOutputStream());	
 				//out.writeObject("hello");//out.writeObject(update);
-				//out.flush();
+				out.flush();
 				sock.close();		
 			}
 			//out.close();
