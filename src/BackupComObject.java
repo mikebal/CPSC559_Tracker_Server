@@ -13,7 +13,7 @@ public class BackupComObject implements Serializable{
     private ArrayList<ClientObject> disconnectedClients;
     private ArrayList<ClientObject> newClients;
 
-    public void BackupComObject(ArrayList<FileObject> newFiles, ArrayList<FileObject> removedFiles, ArrayList<ClientObject> disconnectedClients, ArrayList<ClientObject> newClients)
+    public BackupComObject(ArrayList<FileObject> newFiles, ArrayList<FileObject> removedFiles, ArrayList<ClientObject> disconnectedClients, ArrayList<ClientObject> newClients)
     {
         this.newFileList = newFiles;
         this.removedFiles = removedFiles;

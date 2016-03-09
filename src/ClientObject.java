@@ -1,8 +1,10 @@
+import java.io.*;
+
 /**
  * Created by Michael on 3/2/2016.
  *
  */
-public class ClientObject {
+public class ClientObject implements Serializable{
     private String IP_Address;
     private String port;
     private static final String SPECIAL_BREAK_SYMBOL = "'#";

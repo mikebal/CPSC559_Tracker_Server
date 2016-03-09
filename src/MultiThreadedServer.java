@@ -27,6 +27,8 @@ public class MultiThreadedServer implements Runnable {
         this.serverStatusChanges = backupObject;
         this.serverList = serverList;
 
+
+
     }
     public int getOpenPort(){
         return serverPort;
@@ -36,8 +38,7 @@ public class MultiThreadedServer implements Runnable {
         synchronized (this) {
             this.runningThread = Thread.currentThread();
         }
-        updater = new Updater(2 * 1000, serverList, serverStatusChanges);
-        updater.start();
+        
         openServerSocket();
         while (!isStopped()) {
             Socket clientSocket;

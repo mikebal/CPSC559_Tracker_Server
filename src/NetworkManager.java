@@ -7,7 +7,7 @@ public class NetworkManager {
 
     public static final String SPECIAL_SEPARATOR = "'#";
 
-    public String getIPaddress(){
+    public static String getIPaddress(){
         String IPaddress = "";
     try {
         InetAddress thisIp = InetAddress.getLocalHost();

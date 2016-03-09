@@ -27,13 +27,15 @@ public class Updater extends Thread
 		try{
 			for(int i = 0; i < serverList.size(); i++)
 			{
+				System.out.println("\n DEBUG" );
+				System.out.println(serverList.get(i).get_IP_Address() + " " + serverList.get(i).getPort());
 				Socket sock = new Socket(InetAddress.getByName(serverList.get(i).get_IP_Address()), serverList.get(i).getPort());
-				out = new ObjectOutputStream(sock.getOutputStream());	
-				out.writeObject(update);
-				out.flush();
+				//out = new ObjectOutputStream(sock.getOutputStream());	
+				//out.writeObject("hello");//out.writeObject(update);
+				//out.flush();
 				sock.close();		
 			}
-			out.close();
+			//out.close();
 		}
 		catch(IOException e){
 			e.printStackTrace();

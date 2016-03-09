@@ -11,10 +11,38 @@ public class Main {
     {
         ArrayList<ClientObject> clientList = new ArrayList<>();
         ArrayList<ClientObject> serverList = new ArrayList<>();
+        ArrayList<ClientObject> serverList2 = new ArrayList<>();
+        ArrayList<ClientObject> disconnectedClients = new ArrayList<ClientObject>();
+        ArrayList<ClientObject> newClients = new ArrayList<ClientObject>();
+        ArrayList<FileObject> newFiles= new ArrayList<FileObject>();
+        ArrayList<FileObject> removedFiles= new ArrayList<FileObject>();
         ArrayList<FileObject> fileList = new ArrayList<>();
-        BackupComObject serverStateChanges = new BackupComObject();
+
         int startingPort = 9010;
-        boolean isPrimaryServerRunning = true;
+        boolean isPrimaryServerRunning = false;
+
+        /*initializing objects
+        */
+        ClientObject clientObject = new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8500));
+        ClientObject clientObject2= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8999));
+        ClientObject serverObject= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010));
+        FileObject fileObject = new FileObject("added-file1", clientObject);
+        FileObject fileObject2 = new FileObject("removed-file2", clientObject);
+       
+        newFiles.add(fileObject);
+        removedFiles.add(fileObject2);
+        disconnectedClients.add(clientObject2);
+        newClients.add(clientObject);
+        BackupComObject serverStateChanges = new BackupComObject(newFiles, removedFiles, disconnectedClients, newClients);
+
+        serverList.add(serverObject);
+        serverList2.add(serverObject);
+
+
+        //ClientObject serverObject= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9000));
+        //ClientObject serverObject2= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8001));
+        //serverList.add(serverObject);
+        //serverList.add(serverObject2);
 
         /**
          * server: The connection point clients to join the network
@@ -71,6 +99,8 @@ public class Main {
         RedirectClient listServerCommunicator = new RedirectClient();
         listServerCommunicator.connectToRedirect(newServerMessage);
 
+        Updater updater = new Updater(2000, serverList2, serverStateChanges);
+        updater.start();
 
         try {
             Thread.sleep(1000 * 1000);
