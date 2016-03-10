@@ -47,32 +47,37 @@ public class WorkerRunnable implements Runnable {
                 parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);  // Break up messages into commands separated by "'#"
                 clientID = new ClientObject(parsedInput[0], parsedInput[1]);
                 clientList.add(clientID);                   // Add the new client to the Client list.
-               // output.write("hello from server\n".getBytes());
-                while(!receivedMSG.equals("exit")) {
+
+               // while(!receivedMSG.equals("exit")) {
                     receivedMSG = in.readLine();
                     System.out.println(receivedMSG);
 
                     if(receivedMSG.equals("show user list"))
                     {
                         localOutput = requestManager.getClientListString(clientList);
-                        System.out.println(localOutput);
+                        output.write(localOutput.getBytes());
+                    }
+                    else if(receivedMSG.equals("show file list"))
+                    {
+                        localOutput = requestManager.showFileList(fileList);
+                        output.write(localOutput.getBytes());
                     }
                     else if(receivedMSG.contains("'#")) {
                         parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);
-                        if(parsedInput.length == 2)
-                        {
-                            if(parsedInput[0].equals("add"))
-                            {
-                                requestManager.clientRequestAdd(parsedInput[1], clientID, fileList);
+                        if(parsedInput.length == 4) {
+                            if (parsedInput[0].equals("add")) {
+                                requestManager.clientRequestAdd(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3]), fileList);
                             }
-                            else if(parsedInput[0].equals("get"))
-                            {
+                        }
+                        else  if(parsedInput.length == 2) {
+                            if (parsedInput[0].equals("get")) {
                                 response = requestManager.clientRequestGet(parsedInput[1], fileList);
                                 output.write(response.getBytes());
                             }
                         }
+
                     }
-                }
+
             } catch (IOException e) {
                 System.out.println("Read failed");
                 System.exit(-1);
