@@ -1,10 +1,11 @@
 import java.util.ArrayList;
+import java.io.*;
 
 /**
  * Created by Michael on 3/2/2016.
  *
  */
-public class FileObject {
+public class FileObject implements Serializable {
     private String fileName;
     private ArrayList<ClientObject> seeders = new ArrayList<>();
     //String Hash;  // Possible use to ensure file is the same

@@ -7,7 +7,7 @@ public class Updater extends Thread
 	public int updateInterval;
 	public BackupComObject update;
 	public ArrayList<ClientObject> serverList;
-	public ObjectOutputStream out = null;
+	public ObjectOutputStream outObj = null;
 
 	public Updater(int updateInterval, ArrayList<ClientObject> serverList, BackupComObject update){
 		this.updateInterval = updateInterval;
@@ -22,26 +22,20 @@ public class Updater extends Thread
 	}
 
 	/*to be completed*/
-	public void sendRecurringUpdate()
+	public void sendRecurringUpdate()  
 	{
 		try{
 			for(int i = 0; i < serverList.size(); i++)
 			{
-				System.out.println("\n DEBUG" );
-				System.out.println(serverList.get(i).get_IP_Address() + " " + serverList.get(i).getPort());
-				Socket sock = new Socket("localhost", 9010);
-				PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
-				out.println("update");
-				//Socket sock = new Socket(InetAddress.getByName(serverList.get(i).get_IP_Address()), serverList.get(i).getPort());
-				//out = new ObjectOutputStream(sock.getOutputStream());	
-				//out.writeObject("hello");//out.writeObject(update);
-				out.flush();
+				Socket sock = new Socket(InetAddress.getByName(serverList.get(i).get_IP_Address()), serverList.get(i).getPort());
+				outObj = new ObjectOutputStream(sock.getOutputStream());	
+				outObj.writeObject(update);
+				outObj.flush();
 				sock.close();		
 			}
-			//out.close();
 		}
 		catch(IOException e){
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 }

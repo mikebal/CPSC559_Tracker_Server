@@ -26,23 +26,18 @@ public class Main {
         ClientObject clientObject = new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8500));
         ClientObject clientObject2= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8999));
         ClientObject serverObject= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010));
-        FileObject fileObject = new FileObject("added-file1", clientObject);
-        FileObject fileObject2 = new FileObject("removed-file2", clientObject);
+        ClientObject serverObject2 = new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9012));
        
-        newFiles.add(fileObject);
-        removedFiles.add(fileObject2);
-        disconnectedClients.add(clientObject2);
-        newClients.add(clientObject);
+        newFiles.add(new FileObject("file1.txt", clientObject));
+        removedFiles.add(new FileObject("file2.pdf", clientObject));
+        disconnectedClients.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8999)));
+        newClients.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8500)));
         BackupComObject serverStateChanges = new BackupComObject(newFiles, removedFiles, disconnectedClients, newClients);
 
-        serverList.add(serverObject);
-        serverList2.add(serverObject);
+        serverList.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010)));
+        serverList2.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010)));
+        serverList2.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9012)));
 
-
-        //ClientObject serverObject= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9000));
-        //ClientObject serverObject2= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8001));
-        //serverList.add(serverObject);
-        //serverList.add(serverObject2);
 
         /**
          * server: The connection point clients to join the network

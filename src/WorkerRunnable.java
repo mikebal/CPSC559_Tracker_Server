@@ -3,7 +3,7 @@
  */
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.*;
 /** Description of WorkerRunnable
  *
  * @author Michael Balcerzak
@@ -18,6 +18,8 @@ public class WorkerRunnable implements Runnable {
     private ArrayList<ClientObject> clientList;
     private ArrayList<FileObject> fileList;
     private BackupComObject serverStateChange;
+    private ObjectInputStream objectInputStream;
+    private BackupComObject update;
 
     public WorkerRunnable(Socket clientSocket, String serverText, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, BackupComObject serverStateChange) {
         this.clientSocket = clientSocket;
@@ -35,19 +37,51 @@ public class WorkerRunnable implements Runnable {
             OutputStream output = clientSocket.getOutputStream();
             String receivedMSG = "";
             String response;
+            String str;
             String[] parsedInput;
             RequestManager requestManager = new RequestManager();
             String localOutput;
 
             try {
+                ////
+                    
+                    objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+                    update = (BackupComObject)objectInputStream.readObject();
+                    System.out.println("Update received:");
+                    System.out.println("New clients:");
+                    Iterator<ClientObject> itr = update.getNewClients().iterator();
+                    while (itr.hasNext())
+                    {
+                        System.out.println(itr.next().get_Client_info());
+                    }
+                    System.out.println("Disconnected clients:");
+                    itr = update.getDisconnectedClients().iterator();
+                    while (itr.hasNext())
+                    {
+                        System.out.println(itr.next().get_Client_info());
+                    }
+                    System.out.println("New Files:");
+                    Iterator<FileObject> fileItr = update.getNewFileList().iterator();
+                    while (fileItr.hasNext())
+                    {
+                        System.out.println(fileItr.next().getFileName());
+                    }
+                    System.out.println("Removed Files:");
+                    fileItr = update.getRemovedFiles().iterator();
+                    while (fileItr.hasNext())
+                    {
+                        System.out.println(fileItr.next().getFileName());
+                    }
+
+                ////
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         clientSocket.getInputStream()));
 
-                receivedMSG = in.readLine();  System.out.println("_____ " + receivedMSG); while(receivedMSG == null);          // Client should automatically send it's info to the server
+                receivedMSG = in.readLine();  while(receivedMSG == null);          // Client should automatically send it's info to the server
                 parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);  // Break up messages into commands separated by "'#"
                 clientID = new ClientObject(parsedInput[0], parsedInput[1]);
                 clientList.add(clientID);                   // Add the new client to the Client list.
-
+                System.out.println("got here");
                 while(!receivedMSG.equals("exit")) {
                     receivedMSG = in.readLine();
                     System.out.println(receivedMSG);
@@ -66,15 +100,21 @@ public class WorkerRunnable implements Runnable {
                                 requestManager.clientRequestAdd(parsedInput[1], clientID, fileList);
                             }
                             else if(parsedInput[0].equals("get"))
-                            {
+                            {                                    
                                 response = requestManager.clientRequestGet(parsedInput[1], fileList);
                                 output.write(response.getBytes());
                             }
                         }
                     }
                 }
-            } catch (IOException e) {
+            }
+        
+            catch(ClassNotFoundException e){
+                e.printStackTrace();
+            }
+            catch (IOException e) {
                 System.out.println("Read failed");
+                e.printStackTrace();
                 System.exit(-1);
             }
 
