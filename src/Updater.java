@@ -28,6 +28,11 @@ public class Updater extends Thread
 			for(int i = 0; i < serverList.size(); i++)
 			{
 				Socket sock = new Socket(InetAddress.getByName(serverList.get(i).get_IP_Address()), serverList.get(i).getPort());
+				PrintWriter printWriter = new PrintWriter(sock.getOutputStream(), true);
+				printWriter.print("update\n");
+				printWriter.flush();
+				//sock.close();
+				//Socket sock = new Socket(InetAddress.getByName(serverList.get(i).get_IP_Address()), serverList.get(i).getPort());
 				outObj = new ObjectOutputStream(sock.getOutputStream());	
 				outObj.writeObject(update);
 				outObj.flush();

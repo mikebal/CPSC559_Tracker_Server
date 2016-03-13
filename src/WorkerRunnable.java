@@ -33,6 +33,7 @@ public class WorkerRunnable implements Runnable {
        ClientObject clientID = null;
 
         try {
+
             InputStream input = clientSocket.getInputStream();
             OutputStream output = clientSocket.getOutputStream();
             String receivedMSG = "";
@@ -42,10 +43,32 @@ public class WorkerRunnable implements Runnable {
             RequestManager requestManager = new RequestManager();
             String localOutput;
 
-            try {
-                ////
-                    
-                    objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+            try { 
+            
+                InputStream inputStream = clientSocket.getInputStream();
+                BufferedInputStream  buff = new BufferedInputStream (clientSocket.getInputStream());
+                while(buff.available() == 0);
+                int ch = inputStream.read();
+                StringBuffer stringBuffer = new StringBuffer();
+                
+                while((char)ch != '\n' && (char)ch != '\r')
+                {
+                    stringBuffer.append((char)ch);
+                    ch = inputStream.read();
+                }
+                
+                /*
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        clientSocket.getInputStream()));
+                in.mark(256);
+                receivedMSG = in.readLine();
+            */
+                receivedMSG = stringBuffer.toString();
+                System.out.println(stringBuffer.toString());
+
+                if(receivedMSG.equals("update"))
+                {
+                    ObjectInputStream objectInputStream = open(clientSocket);
                     update = (BackupComObject)objectInputStream.readObject();
                     System.out.println("Update received:");
                     System.out.println("New clients:");
@@ -72,16 +95,17 @@ public class WorkerRunnable implements Runnable {
                     {
                         System.out.println(fileItr.next().getFileName());
                     }
+                }
 
-                ////
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        clientSocket.getInputStream()));
+                else{
 
-                receivedMSG = in.readLine();  while(receivedMSG == null);          // Client should automatically send it's info to the server
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+                //receivedMSG = in.readLine();  
+                System.out.println(receivedMSG);       // Client should automatically send it's info to the server
                 parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);  // Break up messages into commands separated by "'#"
                 clientID = new ClientObject(parsedInput[0], parsedInput[1]);
                 clientList.add(clientID);                   // Add the new client to the Client list.
-                System.out.println("got here");
                 while(!receivedMSG.equals("exit")) {
                     receivedMSG = in.readLine();
                     System.out.println(receivedMSG);
@@ -108,6 +132,7 @@ public class WorkerRunnable implements Runnable {
                     }
                 }
             }
+            }
         
             catch(ClassNotFoundException e){
                 e.printStackTrace();
@@ -126,5 +151,32 @@ public class WorkerRunnable implements Runnable {
             //report exception somewhere.
             e.printStackTrace();
         }
+    }
+
+    public ObjectInputStream open(Socket s) throws IOException{
+
+
+        try{
+            ObjectInputStream o = new ObjectInputStream(s.getInputStream());
+            return o;
+        }
+        catch(Exception e){
+            try{
+
+                InputStream inputStream= s.getInputStream();
+                int ch = inputStream.read();
+                System.out.println("read a byte");
+                if (ch != -1)
+                    open(s);
+                else{
+                    System.out.println("reached end of stream");
+                }
+            }
+            catch(Exception ee){
+                ee.printStackTrace();
+            }
+        }
+        System.out.println("null");
+        return null;
     }
 }
