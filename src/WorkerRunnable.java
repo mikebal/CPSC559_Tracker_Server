@@ -57,12 +57,6 @@ public class WorkerRunnable implements Runnable {
                     ch = inputStream.read();
                 }
                 
-                /*
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        clientSocket.getInputStream()));
-                in.mark(256);
-                receivedMSG = in.readLine();
-            */
                 receivedMSG = stringBuffer.toString();
                 System.out.println(stringBuffer.toString());
 
@@ -99,41 +93,41 @@ public class WorkerRunnable implements Runnable {
 
                 else{
 
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-                //receivedMSG = in.readLine();  
-                System.out.println(receivedMSG);       // Client should automatically send it's info to the server
-                parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);  // Break up messages into commands separated by "'#"
-                clientID = new ClientObject(parsedInput[0], parsedInput[1]);
-                clientList.add(clientID);                   // Add the new client to the Client list.
-                while(!receivedMSG.equals("exit")) {
-                    receivedMSG = in.readLine();
-                    System.out.println(receivedMSG);
-
-                    if(receivedMSG.equals("show user list"))
-                    {
-                        localOutput = requestManager.getClientListString(clientList);
-                        System.out.println(localOutput);
+                if(receivedMSG.equals("show user list"))
+                {
+                    localOutput = requestManager.getClientListString(clientList);
+                    output.write(localOutput.getBytes());
+                }
+                else if(receivedMSG.equals("show file list"))
+                {
+                    localOutput = requestManager.showFileList(fileList);
+                    output.write(localOutput.getBytes());
+                }
+                else if(receivedMSG.contains("'#")) {
+                    parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);
+                        
+                    if(parsedInput.length == 2) {
+                        if (parsedInput[0].equals("get")) {
+                            response = requestManager.clientRequestGet(parsedInput[1], fileList);
+                            output.write(response.getBytes());
+                        }
                     }
-                    else if(receivedMSG.contains("'#")) {
-                        parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);
-                        if(parsedInput.length == 2)
-                        {
-                            if(parsedInput[0].equals("add"))
-                            {
-                                requestManager.clientRequestAdd(parsedInput[1], clientID, fileList);
-                            }
-                            else if(parsedInput[0].equals("get"))
-                            {                                    
-                                response = requestManager.clientRequestGet(parsedInput[1], fileList);
-                                output.write(response.getBytes());
-                            }
+                    else if(parsedInput.length == 3) {
+                        if (parsedInput[0].equals("new-client-join-request")){
+                            clientID = new ClientObject(parsedInput[0], parsedInput[1]);
+                            clientList.add(clientID);
+                        }
+                        clientID = new ClientObject(parsedInput[0], parsedInput[1]);
+                        clientList.add(clientID);                   // Add the new client to the Client list.
+                    }
+                    else if(parsedInput.length == 4) {
+                        if (parsedInput[0].equals("add")) {
+                            requestManager.clientRequestAdd(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3]), fileList);
                         }
                     }
                 }
             }
-            }
-        
+            } 
             catch(ClassNotFoundException e){
                 e.printStackTrace();
             }
@@ -151,6 +145,10 @@ public class WorkerRunnable implements Runnable {
             //report exception somewhere.
             e.printStackTrace();
         }
+        /*
+            catch(InterruptedException e){
+                e.printStackTrace();
+            }*/
     }
 
     public ObjectInputStream open(Socket s) throws IOException{

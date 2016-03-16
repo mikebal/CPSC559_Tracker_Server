@@ -47,4 +47,13 @@ public class RequestManager {
         System.out.println(response);
         return response;
     }
+
+    public String showFileList(ArrayList<FileObject> fileList)
+    {
+        String response = "";
+        for(int i = 0; i < fileList.size(); i++)
+            response += fileList.get(i).getFileName() + "'#";
+
+        return response;
+    }
 }
