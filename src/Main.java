@@ -23,6 +23,7 @@ public class Main {
 
         /*initializing objects
         */
+        /*
         ClientObject clientObject = new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8500));
         ClientObject clientObject2= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8999));
         ClientObject serverObject= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010));
@@ -32,6 +33,7 @@ public class Main {
         removedFiles.add(new FileObject("file2.pdf", clientObject));
         disconnectedClients.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8999)));
         newClients.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8500)));
+        */
         BackupComObject serverStateChanges = new BackupComObject(newFiles, removedFiles, disconnectedClients, newClients);
 
         serverList.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010)));

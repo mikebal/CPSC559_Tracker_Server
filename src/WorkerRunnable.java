@@ -30,8 +30,9 @@ public class WorkerRunnable implements Runnable {
     }
 
     public void run() {
-       ClientObject clientID = null;
-
+        ClientObject clientID = null;
+        FileListManager fileListManager = new FileListManager(fileList);
+        
         try {
 
             InputStream input = clientSocket.getInputStream();
@@ -81,7 +82,29 @@ public class WorkerRunnable implements Runnable {
                     Iterator<FileObject> fileItr = update.getNewFileList().iterator();
                     while (fileItr.hasNext())
                     {
-                        System.out.println(fileItr.next().getFileName());
+
+                        FileObject fileObject = fileItr.next();
+                        System.out.println(fileObject.getFileName());
+
+                        int index = fileListManager.findFileIndex(fileObject.getFileName());
+                        ArrayList<ClientObject> oldSeeders = fileList.get(index).getSeeders();
+                        ArrayList<ClientObject> newSeeders = fileObject.getSeeders();
+                        
+                        newSeeders.removeAll(oldSeeders);
+                        oldSeeders.addAll(newSeeders);
+                        fileList.set(index, new FileObject(fileObject.getFileName(), oldSeeders));
+
+                    }
+                    
+                    System.out.println("My files after update: ");
+                    fileItr = fileList.iterator();
+                    while(fileItr.hasNext())
+                    {
+                        FileObject fileObject = fileItr.next();
+                        Iterator<ClientObject> seeders = fileObject.getSeeders().iterator();
+                        System.out.println(fileObject.getFileName());
+                        while(seeders.hasNext())
+                            System.out.println(seeders.next().get_Client_info());
                     }
                     System.out.println("Removed Files:");
                     fileItr = update.getRemovedFiles().iterator();
@@ -122,10 +145,20 @@ public class WorkerRunnable implements Runnable {
                     }
                     else if(parsedInput.length == 4) {
                         if (parsedInput[0].equals("add")) {
-                            boolean isOld = requestManager.clientRequestAdd(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3]), fileList);
-                            if(!isOld){
-                                serverStateChange.addtoNewFileList(new FileObject(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3])));
+                            requestManager.clientRequestAdd(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3]), fileList);
+
+                        //fileListManager.addFileToList(new FileObject(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3])), new ClientObject(parsedInput[2], parsedInput[3]));
+                            System.out.println("My files after add: ");
+                            Iterator<FileObject> fileItr = fileList.iterator();
+                            while(fileItr.hasNext())
+                            {
+                                FileObject fileObject = fileItr.next();
+                                Iterator<ClientObject> seeders = fileObject.getSeeders().iterator();
+                                System.out.println(fileObject.getFileName());
+                                while(seeders.hasNext())
+                                    System.out.println(seeders.next().get_Client_info());
                             }
+
 
                         }
                     }

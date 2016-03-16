@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class FileListManager {
     private ArrayList<FileObject> fileList;
 
-    public void FileObject(ArrayList<FileObject> list)
+    public FileListManager(ArrayList<FileObject> list)
     {
         this.fileList = list;
     }
@@ -28,7 +28,7 @@ public class FileListManager {
         }
     }
 
-    private int findFileIndex(String fileName){
+    protected int findFileIndex(String fileName){
         int index = -1;
 
         for(int i = 0; i < fileList.size(); i++)
