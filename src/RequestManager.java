@@ -19,7 +19,7 @@ public class RequestManager {
         return displayList;
     }
 
-    public void clientRequestAdd(String fileName, ClientObject clientObject, ArrayList<FileObject> fileList)
+    public boolean clientRequestAdd(String fileName, ClientObject clientObject, ArrayList<FileObject> fileList)
     {
         boolean fileFound = false;
         for(int i = 0; i < fileList.size(); i++)
@@ -34,6 +34,7 @@ public class RequestManager {
             FileObject newFile = new FileObject(fileName, clientObject);
             fileList.add(newFile);
         }
+        return fileFound;
     }
 
     public String clientRequestGet(String fileName, ArrayList<FileObject> fileList)

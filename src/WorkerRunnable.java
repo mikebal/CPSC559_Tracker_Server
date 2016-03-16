@@ -122,7 +122,11 @@ public class WorkerRunnable implements Runnable {
                     }
                     else if(parsedInput.length == 4) {
                         if (parsedInput[0].equals("add")) {
-                            requestManager.clientRequestAdd(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3]), fileList);
+                            boolean isOld = requestManager.clientRequestAdd(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3]), fileList);
+                            if(!isOld){
+                                serverStateChange.addtoNewFileList(new FileObject(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3])));
+                            }
+
                         }
                     }
                 }
