@@ -14,11 +14,16 @@ public class FileObject implements Serializable {
         this.fileName = fileName;
         seeders.add(clientObject);
     }
+    public FileObject(String fileName, ArrayList<ClientObject> seeders){
+         this.fileName = fileName;
+         this.seeders = seeders;
+    }
     public String getFileName(){
         return this.fileName;
     }
     public void addSeeder(ClientObject newSeeder){
-        seeders.add(newSeeder);
+        if(!seeders.contains(newSeeder))
+            seeders.add(newSeeder);
     }
 
 
@@ -51,5 +56,10 @@ public class FileObject implements Serializable {
         this.seeders.remove(0);
         this.seeders.add(fileHost);
         return fileHost;
+    }
+
+    public ArrayList<ClientObject> getSeeders()
+    {
+        return this.seeders;
     }
 }

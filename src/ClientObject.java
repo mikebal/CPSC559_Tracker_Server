@@ -29,4 +29,14 @@ public class ClientObject implements Serializable{
     public int getPort(){
         return Integer.parseInt(this.port);
     }
+
+    @Override
+    public boolean equals(Object object){
+        if(object != null && object instanceof ClientObject)
+        {   ClientObject clientObj = (ClientObject)object;
+            return clientObj.get_Client_info().equals(this.get_Client_info());
+        }
+        else
+            return false;
+    }
 }
