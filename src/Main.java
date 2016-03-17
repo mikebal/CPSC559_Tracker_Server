@@ -13,6 +13,7 @@ public class Main {
         BackupComObject serverStateChanges = new BackupComObject();
         int startingPort = 9010;
         boolean isPrimaryServerRunning = false;
+        String redirectIPaddress = "localhost";
 
         /**
          * server: The connection point clients to join the network
@@ -67,7 +68,7 @@ public class Main {
          */
         newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());
         RedirectClient listServerCommunicator = new RedirectClient();
-        listServerCommunicator.connectToRedirect(newServerMessage);
+        listServerCommunicator.connectToRedirect(newServerMessage, redirectIPaddress);
 
 
         try {

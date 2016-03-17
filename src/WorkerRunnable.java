@@ -45,31 +45,27 @@ public class WorkerRunnable implements Runnable {
 
                 receivedMSG = in.readLine();                // Client should automatically send it's info to the server
                 parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);  // Break up messages into commands separated by "'#"
-                clientID = new ClientObject(parsedInput[0], parsedInput[1]);
-                clientList.add(clientID);                   // Add the new client to the Client list.
-
+                if(parsedInput.length == 3 && parsedInput[0].equals("new")) {
+                    clientID = new ClientObject(parsedInput[0], parsedInput[1]);
+                    clientList.add(clientID);                   // Add the new client to the Client list.
+                }
                // while(!receivedMSG.equals("exit")) {
-                    receivedMSG = in.readLine();
-                    System.out.println(receivedMSG);
-
-                    if(receivedMSG.equals("show user list"))
-                    {
+                //    receivedMSG = in.readLine();
+                 //   System.out.println(receivedMSG);
+                else {
+                    if (receivedMSG.equals("show user list")) {
                         localOutput = requestManager.getClientListString(clientList);
                         output.write(localOutput.getBytes());
-                    }
-                    else if(receivedMSG.equals("show file list"))
-                    {
+                    } else if (receivedMSG.equals("show file list")) {
                         localOutput = requestManager.showFileList(fileList);
                         output.write(localOutput.getBytes());
-                    }
-                    else if(receivedMSG.contains("'#")) {
+                    } else if (receivedMSG.contains("'#")) {
                         parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);
-                        if(parsedInput.length == 4) {
+                        if (parsedInput.length == 4) {
                             if (parsedInput[0].equals("add")) {
                                 requestManager.clientRequestAdd(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3]), fileList);
                             }
-                        }
-                        else  if(parsedInput.length == 2) {
+                        } else if (parsedInput.length == 2) {
                             if (parsedInput[0].equals("get")) {
                                 response = requestManager.clientRequestGet(parsedInput[1], fileList);
                                 output.write(response.getBytes());
@@ -77,6 +73,7 @@ public class WorkerRunnable implements Runnable {
                         }
 
                     }
+                }
 
             } catch (IOException e) {
                 System.out.println("Read failed");

@@ -10,7 +10,7 @@ import java.util.Scanner;
  */
 public class RedirectClient {
 
-    public void connectToRedirect(String message){
+    public void connectToRedirect(String message, String ipAddress){
     Socket clientSocket = null;
     InputStream is           = null;
     OutputStream os           = null;
@@ -19,7 +19,7 @@ public class RedirectClient {
     try
     {
         //create a socket
-        clientSocket = new Socket("localhost", 9000);
+        clientSocket = new Socket(ipAddress, 9000);
         try
         {
             //get the input and output streams
