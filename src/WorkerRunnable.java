@@ -65,38 +65,41 @@ public class WorkerRunnable implements Runnable {
                 {
                     ObjectInputStream objectInputStream = open(clientSocket);
                     update = (BackupComObject)objectInputStream.readObject();
-                    System.out.println("Update received:");
-                    /*
-                    TBD
-                    System.out.println("New clients:");
-                    Iterator<ClientObject> itr = update.getNewClients().iterator();
-                    while (itr.hasNext())
-                    {
-                        System.out.println(itr.next().get_Client_info());
-                    }
-                    System.out.println("Disconnected clients:");
-                    itr = update.getDisconnectedClients().iterator();
-                    while (itr.hasNext())
-                    {
-                        System.out.println(itr.next().get_Client_info());
-                    }*/
+
                     System.out.println("New Files:");
                     Iterator<FileObject> fileItr = update.getNewFileList().iterator();
+                    while(fileItr.hasNext())
+                    {
+                        FileObject fileObject = fileItr.next();
+                        Iterator<ClientObject> seeders = fileObject.getSeeders().iterator();
+                        System.out.println(fileObject.getFileName());
+                        while(seeders.hasNext())
+                            System.out.println(seeders.next().get_Client_info());
+                    }
+
+                    fileItr = update.getNewFileList().iterator();
+
+                    //updating files based on update
                     while (fileItr.hasNext())
                     {
 
                         FileObject fileObject = fileItr.next();
-                        System.out.println(fileObject.getFileName());
 
                         int index = fileListManager.findFileIndex(fileObject.getFileName());
-                        ArrayList<ClientObject> oldSeeders = fileList.get(index).getSeeders();
                         ArrayList<ClientObject> newSeeders = fileObject.getSeeders();
-                        
+                        if(index != -1)
+                        {
+                        ArrayList<ClientObject> oldSeeders = fileList.get(index).getSeeders();
                         newSeeders.removeAll(oldSeeders);
                         oldSeeders.addAll(newSeeders);
                         fileList.set(index, new FileObject(fileObject.getFileName(), oldSeeders));
+                        }
+                        else{
+                            fileList.add(new FileObject(fileObject.getFileName(), newSeeders));
+                        }
 
                     }
+
                     
                     System.out.println("My files after update: ");
                     fileItr = fileList.iterator();
@@ -108,14 +111,6 @@ public class WorkerRunnable implements Runnable {
                         while(seeders.hasNext())
                             System.out.println(seeders.next().get_Client_info());
                     }
-                    /*
-                    TBD
-                    System.out.println("Removed Files:");
-                    fileItr = update.getRemovedFiles().iterator();
-                    while (fileItr.hasNext())
-                    {
-                        System.out.println(fileItr.next().getFileName());
-                    }*/
                 }
 
                 else{
@@ -181,15 +176,11 @@ public class WorkerRunnable implements Runnable {
             long time = System.currentTimeMillis();
             output.close();
             input.close();
-            System.out.println(receivedMSG + "      " + time);
+            //System.out.println(receivedMSG + "      " + time);
         } catch (IOException e) {
             //report exception somewhere.
             e.printStackTrace();
         }
-        /*
-            catch(InterruptedException e){
-                e.printStackTrace();
-            }*/
     }
 
     public ObjectInputStream open(Socket s) throws IOException{

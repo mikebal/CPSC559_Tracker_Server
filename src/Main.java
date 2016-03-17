@@ -38,6 +38,7 @@ public class Main {
 
         serverList.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010)));
         serverList2.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010)));
+        serverList2.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9011)));
         serverList2.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9012)));
 
 
@@ -52,11 +53,15 @@ public class Main {
          *          BackupComObject serverStateChanges - object that is updates when a user changes things
          *
          */
+
+        
         MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, null);
         new Thread(server).start();
         Thread.sleep(1000);
         startingPort = server.getOpenPort();
         System.out.println("Open port Server = " + startingPort);
+        
+
         /**
          * backupServer: The connection point other servers to join the network
          *
@@ -68,6 +73,8 @@ public class Main {
          *          BackupComObject serverStateChanges - object that is updates when a user changes things
          *
          */
+
+        /*
         startingPort++;
         MultiThreadedServer backupServer = new MultiThreadedServer(startingPort, clientList, fileList, true, serverStateChanges, serverList);
         new Thread(backupServer).start();
@@ -76,27 +83,29 @@ public class Main {
 
         NetworkManager networkManager = new NetworkManager();
         String newServerMessage = networkManager.generateTrackerAdvertisment(backupServer.getOpenPort());
-
+        */
         /**
          * BackupComManager broadcast
          *
          * In the even that this application instance is not the first(Primary) to run the then this
          * server will connect to the primary server and announce it's self with its info*/
+        /*
         if(isPrimaryServerRunning)
         {
             BackupComManager broadcast = new BackupComManager();
             broadcast.client(newServerMessage, 9011);
-        }
+        }*/
         /**
          *  RedirectClient listServerCommunicator
          *
          *  Once the server is running, the listServer is notified of the new server and its address and port
          */
-        newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());
+        NetworkManager networkManager = new NetworkManager();
+        String newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());
         RedirectClient listServerCommunicator = new RedirectClient();
         listServerCommunicator.connectToRedirect(newServerMessage);
 
-        Updater updater = new Updater(2000, serverList2, serverStateChanges);
+        Updater updater = new Updater(3000, serverList2, serverStateChanges);
         updater.start();
 
         try {
