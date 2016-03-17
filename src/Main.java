@@ -34,7 +34,7 @@ public class Main {
         disconnectedClients.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8999)));
         newClients.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8500)));
         */
-        BackupComObject serverStateChanges = new BackupComObject(newFiles, removedFiles, disconnectedClients, newClients);
+        BackupComObject serverStateChanges = new BackupComObject(fileList, removedFiles, disconnectedClients, newClients);
 
         serverList.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010)));
         serverList2.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010)));

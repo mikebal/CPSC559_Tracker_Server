@@ -66,6 +66,8 @@ public class WorkerRunnable implements Runnable {
                     ObjectInputStream objectInputStream = open(clientSocket);
                     update = (BackupComObject)objectInputStream.readObject();
                     System.out.println("Update received:");
+                    /*
+                    TBD
                     System.out.println("New clients:");
                     Iterator<ClientObject> itr = update.getNewClients().iterator();
                     while (itr.hasNext())
@@ -77,7 +79,7 @@ public class WorkerRunnable implements Runnable {
                     while (itr.hasNext())
                     {
                         System.out.println(itr.next().get_Client_info());
-                    }
+                    }*/
                     System.out.println("New Files:");
                     Iterator<FileObject> fileItr = update.getNewFileList().iterator();
                     while (fileItr.hasNext())
@@ -106,12 +108,14 @@ public class WorkerRunnable implements Runnable {
                         while(seeders.hasNext())
                             System.out.println(seeders.next().get_Client_info());
                     }
+                    /*
+                    TBD
                     System.out.println("Removed Files:");
                     fileItr = update.getRemovedFiles().iterator();
                     while (fileItr.hasNext())
                     {
                         System.out.println(fileItr.next().getFileName());
-                    }
+                    }*/
                 }
 
                 else{
