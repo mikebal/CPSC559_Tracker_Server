@@ -5,6 +5,8 @@ import java.net.InetAddress;
  */
 public class NetworkManager {
 
+    String name = "So many Cats";
+
     public static final String SPECIAL_SEPARATOR = "'#";
 
     public static String getIPaddress(){
@@ -33,7 +35,11 @@ public class NetworkManager {
     }
 
     public String getTrackerName(){
-        String name = "So many Cats";
-        return name;
+        //String name = "So many Cats";
+        return this.name;
+    }
+
+    public void setTrackerName(String name){
+        this.name = name;
     }
 }

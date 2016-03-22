@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created by Michael on 3/3/2016.
@@ -47,6 +47,34 @@ public class RequestManager {
         }
         System.out.println(response);
         return response;
+    }
+
+    public void clientRequestRemove(String fileName, ClientObject clientObject, ArrayList<FileObject> fileList)
+    {
+        ListIterator<FileObject> itr = fileList.listIterator();
+        boolean fileFound = false;
+        while(itr.hasNext() && fileFound == false){
+            FileObject file = itr.next();
+            if(file.getFileName().equals(fileName))
+            {
+                file.removeSeeder(clientObject);
+                fileFound = true;
+                if(!file.hasSeeders())
+                    itr.remove();
+            }
+        }
+    }
+
+    public void clientRequestLeave(ClientObject clientObject, ArrayList<FileObject> fileList){
+        ListIterator<FileObject> itr = fileList.listIterator();
+
+        while(itr.hasNext()){
+            FileObject file = itr.next();
+            file.removeSeeder(clientObject);
+            if(!file.hasSeeders())
+                itr.remove();
+        }
+
     }
 
     public String showFileList(ArrayList<FileObject> fileList)

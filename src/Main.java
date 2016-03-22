@@ -21,26 +21,8 @@ public class Main {
         int startingPort = 9010;
         boolean isPrimaryServerRunning = false;
 
-        /*initializing objects
-        */
-        /*
-        ClientObject clientObject = new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8500));
-        ClientObject clientObject2= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8999));
-        ClientObject serverObject= new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010));
-        ClientObject serverObject2 = new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9012));
-       
-        newFiles.add(new FileObject("file1.txt", clientObject));
-        removedFiles.add(new FileObject("file2.pdf", clientObject));
-        disconnectedClients.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8999)));
-        newClients.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(8500)));
-        */
-        BackupComObject serverStateChanges = new BackupComObject(fileList, removedFiles, disconnectedClients, newClients);
-
-        serverList.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010)));
-        serverList2.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9010)));
-        serverList2.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9011)));
-        serverList2.add(new ClientObject(NetworkManager.getIPaddress(), String.valueOf(9012)));
-
+        
+        BackupComObject serverStateChanges = new BackupComObject();
 
         /**
          * server: The connection point clients to join the network
@@ -55,7 +37,7 @@ public class Main {
          */
 
         
-        MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, null);
+        MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, serverList);
         new Thread(server).start();
         Thread.sleep(1000);
         startingPort = server.getOpenPort();
@@ -63,49 +45,22 @@ public class Main {
         
 
         /**
-         * backupServer: The connection point other servers to join the network
-         *
-         * inputs:
-         *          a starting point to try and open a port
-         *          A list of the connected clients
-         *          A list of the files that users are sharing
-         *          boolean (true) indication that the server thread being started is for a backup server
-         *          BackupComObject serverStateChanges - object that is updates when a user changes things
-         *
-         */
-
-        /*
-        startingPort++;
-        MultiThreadedServer backupServer = new MultiThreadedServer(startingPort, clientList, fileList, true, serverStateChanges, serverList);
-        new Thread(backupServer).start();
-        Thread.sleep(1000);
-        System.out.println("Open port Backup-Server = " + backupServer.getOpenPort());
-
-        NetworkManager networkManager = new NetworkManager();
-        String newServerMessage = networkManager.generateTrackerAdvertisment(backupServer.getOpenPort());
-        */
-        /**
-         * BackupComManager broadcast
-         *
-         * In the even that this application instance is not the first(Primary) to run the then this
-         * server will connect to the primary server and announce it's self with its info*/
-        /*
-        if(isPrimaryServerRunning)
-        {
-            BackupComManager broadcast = new BackupComManager();
-            broadcast.client(newServerMessage, 9011);
-        }*/
-        /**
          *  RedirectClient listServerCommunicator
          *
          *  Once the server is running, the listServer is notified of the new server and its address and port
          */
         NetworkManager networkManager = new NetworkManager();
+        if(args.length == 1)
+        {
+            networkManager.setTrackerName(args[0]);
+            System.out.println("args " + args[0]);
+        }
+
         String newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());
         RedirectClient listServerCommunicator = new RedirectClient();
         listServerCommunicator.connectToRedirect(newServerMessage);
 
-        Updater updater = new Updater(3000, serverList2, serverStateChanges);
+        Updater updater = new Updater(5000, serverList, serverStateChanges);
         updater.start();
 
         try {

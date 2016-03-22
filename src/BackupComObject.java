@@ -21,6 +21,14 @@ public class BackupComObject implements Serializable{
         this.newClients = newClients;
     }
 
+    public BackupComObject()
+    {
+        this.newFileList = new ArrayList<FileObject>();
+        this.removedFiles = new ArrayList<FileObject>();
+        this.disconnectedClients = new ArrayList<ClientObject>();
+        this.newClients = new ArrayList<ClientObject>();
+    }
+
     public void addtoNewFileList(FileObject newFile){
         this.newFileList.add(newFile);
     }
@@ -51,5 +59,10 @@ public class BackupComObject implements Serializable{
 
     public ArrayList<ClientObject> getNewClients() {
         return newClients;
+    }
+
+    public void printNewFileList(){
+
+        
     }
 }

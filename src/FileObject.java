@@ -25,6 +25,12 @@ public class FileObject implements Serializable {
         if(!seeders.contains(newSeeder))
             seeders.add(newSeeder);
     }
+    public void removeSeeder(ClientObject oldSeeder){
+        seeders.remove(oldSeeder);
+    }
+    public boolean hasSeeders(){
+        return seeders.size() > 0;
+    }
 
 
     /*

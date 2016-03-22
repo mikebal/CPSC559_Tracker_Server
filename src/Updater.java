@@ -24,10 +24,12 @@ public class Updater extends Thread
 	/*to be completed*/
 	public void sendRecurringUpdate()  
 	{
+		System.out.println("in sendRecurringUpdate()");
 		try{
 			for(int i = 0; i < serverList.size(); i++)
 			{
 				Socket sock = new Socket(InetAddress.getByName(serverList.get(i).get_IP_Address()), serverList.get(i).getPort());
+				System.out.println("sending update to: " + serverList.get(i).get_IP_Address() + " " + serverList.get(i).getPort());
 				PrintWriter printWriter = new PrintWriter(sock.getOutputStream(), true);
 				printWriter.print("update\n");
 				printWriter.flush();

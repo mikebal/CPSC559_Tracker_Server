@@ -55,7 +55,7 @@ public class MultiThreadedServer implements Runnable {
             if(!isClientServer) {
                 new Thread(
                         new WorkerRunnable(
-                                clientSocket, "Multithreaded Server", clientList, fileList, serverStatusChanges)
+                                clientSocket, "Multithreaded Server", clientList, fileList, serverStatusChanges, serverList)
                 ).start();
             }
             else{
