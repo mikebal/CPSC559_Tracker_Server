@@ -9,6 +9,13 @@ import java.util.Scanner;
  * Created by Michael on 2/23/2016.
  */
 public class RedirectClient {
+    int port = 9000;
+    String address = "localhost";
+
+    public RedirectClient(String address, int port){
+        this.port = port;
+        this.address = address;
+    }
 
     public void connectToRedirect(String message){
     Socket clientSocket = null;
@@ -19,7 +26,7 @@ public class RedirectClient {
     try
     {
         //create a socket
-        clientSocket = new Socket("localhost", 9000);
+        clientSocket = new Socket(address, port);
         try
         {
             //get the input and output streams

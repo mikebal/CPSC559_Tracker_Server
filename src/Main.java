@@ -17,12 +17,25 @@ public class Main {
         ArrayList<FileObject> newFiles= new ArrayList<FileObject>();
         ArrayList<FileObject> removedFiles= new ArrayList<FileObject>();
         ArrayList<FileObject> fileList = new ArrayList<>();
+        NetworkManager networkManager = new NetworkManager();
+        String redirectServerAddress = new String();
 
         int startingPort = 9010;
         boolean isPrimaryServerRunning = false;
+        int redirectPort = 9000;
 
         
         BackupComObject serverStateChanges = new BackupComObject();
+
+        if(args.length == 3){
+            networkManager.setTrackerName(args[0]);
+            redirectServerAddress = args[1];
+            redirectPort = Integer.parseInt(args[2]);
+        }
+        else{
+            System.out.println("incorrect input parameters");
+            System.exit(0);
+        }
 
         /**
          * server: The connection point clients to join the network
@@ -36,7 +49,6 @@ public class Main {
          *
          */
 
-        
         MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, serverList);
         new Thread(server).start();
         Thread.sleep(1000);
@@ -49,15 +61,9 @@ public class Main {
          *
          *  Once the server is running, the listServer is notified of the new server and its address and port
          */
-        NetworkManager networkManager = new NetworkManager();
-        if(args.length == 1)
-        {
-            networkManager.setTrackerName(args[0]);
-            System.out.println("args " + args[0]);
-        }
 
         String newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());
-        RedirectClient listServerCommunicator = new RedirectClient();
+        RedirectClient listServerCommunicator = new RedirectClient(redirectServerAddress, redirectPort);
         listServerCommunicator.connectToRedirect(newServerMessage);
 
         Updater updater = new Updater(5000, serverList, serverStateChanges);

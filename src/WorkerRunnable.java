@@ -128,8 +128,6 @@ public class WorkerRunnable implements Runnable {
 
                 else{
 
-                System.out.println(receivedMSG);
-
                 if(receivedMSG.equals("show user list"))
                 {
                     localOutput = requestManager.getClientListString(clientList);
