@@ -19,14 +19,14 @@ public class WorkerRunnable implements Runnable {
     private ArrayList<FileObject> fileList;
     private BackupComObject serverStateChange;
     private ArrayList<Integer> activePeers;
+    private final int MAX_CONNECTIONS = 2;
 
-    public WorkerRunnable(Socket clientSocket, String serverText, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, BackupComObject serverStateChange, ArrayList<Integer> registeredPeers) {
+    public WorkerRunnable(Socket clientSocket, String serverText, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, BackupComObject serverStateChange) {
         this.clientSocket = clientSocket;
         this.serverText = serverText;
         this.clientList = clientList;
         this.fileList = fileList;
         this.serverStateChange = serverStateChange;
-        this.activePeers = registeredPeers;
     }
 
     public void run() {
@@ -49,12 +49,14 @@ public class WorkerRunnable implements Runnable {
                 System.out.println(receivedMSG);
                 parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);  // Break up messages into commands separated by "'#"
                 if(parsedInput.length == 3 && parsedInput[0].equals("new")) {
-                    if(activePeers.get(0) > 2)
+                    if(clientList.size() >= MAX_CONNECTIONS)
                     {
-                        output.write("rejected".getBytes());
+                        output.write("refuse".getBytes());
+                        System.out.println("Reject Sent");
                     }
                     else {
                         output.write("accepted".getBytes());
+                        System.out.println("Accepted Connection " + (clientList.size() + 1 ) + "/" + MAX_CONNECTIONS);
                         clientID = new ClientObject(parsedInput[0], parsedInput[1]);
                         clientList.add(clientID);                   // Add the new client to the Client list.
                     }

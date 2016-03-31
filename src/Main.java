@@ -28,7 +28,7 @@ public class Main {
          *          BackupComObject serverStateChanges - object that is updates when a user changes things
          *
          */
-        MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, null, activeConections);
+        MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, null);
         new Thread(server).start();
         Thread.sleep(1000);
         startingPort = server.getOpenPort();
@@ -45,7 +45,7 @@ public class Main {
          *
          */
         startingPort++;
-        MultiThreadedServer backupServer = new MultiThreadedServer(startingPort, clientList, fileList, true, serverStateChanges, serverList, activeConections);
+        MultiThreadedServer backupServer = new MultiThreadedServer(startingPort, clientList, fileList, true, serverStateChanges, serverList);
         new Thread(backupServer).start();
         Thread.sleep(1000);
         System.out.println("Open port Backup-Server = " + backupServer.getOpenPort());
