@@ -21,19 +21,22 @@ public class WorkerRunnable implements Runnable {
     private ObjectInputStream objectInputStream;
     private BackupComObject update;
     private ArrayList<ClientObject> serverList;
+    private boolean acceptClients;
 
-    public WorkerRunnable(Socket clientSocket, String serverText, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, BackupComObject serverStateChange, ArrayList<ClientObject> serverList) {
+    public WorkerRunnable(Socket clientSocket, String serverText, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, BackupComObject serverStateChange, ArrayList<ClientObject> serverList, boolean acceptClients) {
         this.clientSocket = clientSocket;
         this.serverText = serverText;
         this.clientList = clientList;
         this.fileList = fileList;
         this.serverStateChange = serverStateChange;
         this.serverList = serverList;
+        this.acceptClients = acceptClients;
     }
 
     public void run() {
         ClientObject clientID = null;
         FileListManager fileListManager = new FileListManager(fileList);
+        
         
         try {
 
@@ -165,18 +168,31 @@ public class WorkerRunnable implements Runnable {
 
                     }
                     else if(parsedInput.length == 3) {
-                        if (parsedInput[0].equals("new-client-join-request")){
+                        if (parsedInput[2].equals("joining")){
                             clientID = new ClientObject(parsedInput[0], parsedInput[1]);
                             clientList.add(clientID);
 
                             if(serverStateChange.getDisconnectedClients().contains(clientID))
                                 serverStateChange.getDisconnectedClients().remove(clientID);
+
+                            PrintWriter pw = new PrintWriter(output, true);
+                            if(acceptClients == false)
+                            { 
+                                pw.println("refuse");
+                                System.out.println("refuse");
+                            }
+                            else{
+                                pw.println("accept");
+                                System.out.println("accept");
+                            }
+                                
                         }
+                        /*
                         clientID = new ClientObject(parsedInput[0], parsedInput[1]);
                         clientList.add(clientID);                   // Add the new client to the Client list.
 
                         if(serverStateChange.getDisconnectedClients().contains(clientID))
-                            serverStateChange.getDisconnectedClients().remove(clientID);
+                            serverStateChange.getDisconnectedClients().remove(clientID);*/
                     }
                     else if(parsedInput.length == 4 && parsedInput[0].equals("add")) {
                             requestManager.clientRequestAdd(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3]), fileList);

@@ -19,6 +19,7 @@ public class Main {
         ArrayList<FileObject> fileList = new ArrayList<>();
         NetworkManager networkManager = new NetworkManager();
         String redirectServerAddress = new String();
+        boolean acceptClients = true;
 
         int startingPort = 9010;
         boolean isPrimaryServerRunning = false;
@@ -27,15 +28,19 @@ public class Main {
         
         BackupComObject serverStateChanges = new BackupComObject();
 
-        if(args.length == 3){
+        if(args.length >= 3){
             networkManager.setTrackerName(args[0]);
             redirectServerAddress = args[1];
             redirectPort = Integer.parseInt(args[2]);
+            if(args.length == 4)
+                acceptClients = false;
         }
         else{
             System.out.println("incorrect input parameters");
             System.exit(0);
         }
+
+        System.out.println("acceptclients " + acceptClients);
 
         /**
          * server: The connection point clients to join the network
@@ -49,7 +54,7 @@ public class Main {
          *
          */
 
-        MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, serverList);
+        MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, serverList, acceptClients);
         new Thread(server).start();
         Thread.sleep(1000);
         startingPort = server.getOpenPort();

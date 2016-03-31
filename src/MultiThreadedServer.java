@@ -18,15 +18,16 @@ public class MultiThreadedServer implements Runnable {
     private boolean isClientServer;
     private BackupComObject serverStatusChanges;
     private Updater updater;
+    boolean acceptClients;
 
-    public MultiThreadedServer(int port, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, boolean isClientServer, BackupComObject backupObject, ArrayList<ClientObject> serverList) {
+    public MultiThreadedServer(int port, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, boolean isClientServer, BackupComObject backupObject, ArrayList<ClientObject> serverList, boolean acceptClients) {
         this.serverPort = port;
         this.clientList = clientList;
         this.fileList = fileList;
         this.isClientServer = isClientServer;
         this.serverStatusChanges = backupObject;
         this.serverList = serverList;
-
+        this.acceptClients = acceptClients;
 
 
     }
@@ -55,7 +56,7 @@ public class MultiThreadedServer implements Runnable {
             if(!isClientServer) {
                 new Thread(
                         new WorkerRunnable(
-                                clientSocket, "Multithreaded Server", clientList, fileList, serverStatusChanges, serverList)
+                                clientSocket, "Multithreaded Server", clientList, fileList, serverStatusChanges, serverList, acceptClients)
                 ).start();
             }
             else{
