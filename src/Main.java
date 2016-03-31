@@ -12,6 +12,8 @@ public class Main {
         ArrayList<FileObject> fileList = new ArrayList<>();
         BackupComObject serverStateChanges = new BackupComObject();
         int startingPort = 9010;
+        ArrayList<Integer> activeConections = new ArrayList<>();
+        activeConections.add(0);
         boolean isPrimaryServerRunning = false;
         String redirectIPaddress = "localhost";
 
@@ -26,7 +28,7 @@ public class Main {
          *          BackupComObject serverStateChanges - object that is updates when a user changes things
          *
          */
-        MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, null);
+        MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, null, activeConections);
         new Thread(server).start();
         Thread.sleep(1000);
         startingPort = server.getOpenPort();
@@ -43,7 +45,7 @@ public class Main {
          *
          */
         startingPort++;
-        MultiThreadedServer backupServer = new MultiThreadedServer(startingPort, clientList, fileList, true, serverStateChanges, serverList);
+        MultiThreadedServer backupServer = new MultiThreadedServer(startingPort, clientList, fileList, true, serverStateChanges, serverList, activeConections);
         new Thread(backupServer).start();
         Thread.sleep(1000);
         System.out.println("Open port Backup-Server = " + backupServer.getOpenPort());

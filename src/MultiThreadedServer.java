@@ -17,14 +17,16 @@ public class MultiThreadedServer implements Runnable {
     private ArrayList<FileObject> fileList;
     private boolean isClientServer;
     private BackupComObject serverStatusChanges;
+    private ArrayList<Integer> connectionCount;
 
-    public MultiThreadedServer(int port, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, boolean isClientServer, BackupComObject backupObject, ArrayList<ClientObject> serverList) {
+    public MultiThreadedServer(int port, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, boolean isClientServer, BackupComObject backupObject, ArrayList<ClientObject> serverList, ArrayList<Integer> activeConnections) {
         this.serverPort = port;
         this.clientList = clientList;
         this.fileList = fileList;
         this.isClientServer = isClientServer;
         this.serverStatusChanges = backupObject;
         this.serverList = serverList;
+        this.connectionCount = activeConnections;
 
     }
     public int getOpenPort(){
@@ -49,10 +51,16 @@ public class MultiThreadedServer implements Runnable {
                         "Error accepting client connection", e);
             }
             if(!isClientServer) {
-                new Thread(
-                        new WorkerRunnable(
-                                clientSocket, "Multithreaded Server", clientList, fileList, serverStatusChanges)
-                ).start();
+              //  if (connectionCount.get(0) < 1) {
+               //     int newValue = connectionCount.get(0);
+                //    newValue++;
+                 //   connectionCount.set(0, newValue);
+                System.out.println("TACOS");
+                    new Thread(
+                            new WorkerRunnable(
+                                    clientSocket, "Multithreaded Server", clientList, fileList, serverStatusChanges, connectionCount)
+                    ).start();
+                //}
             }
             else{
                 new Thread(

@@ -18,13 +18,15 @@ public class WorkerRunnable implements Runnable {
     private ArrayList<ClientObject> clientList;
     private ArrayList<FileObject> fileList;
     private BackupComObject serverStateChange;
+    private ArrayList<Integer> activePeers;
 
-    public WorkerRunnable(Socket clientSocket, String serverText, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, BackupComObject serverStateChange) {
+    public WorkerRunnable(Socket clientSocket, String serverText, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, BackupComObject serverStateChange, ArrayList<Integer> registeredPeers) {
         this.clientSocket = clientSocket;
         this.serverText = serverText;
         this.clientList = clientList;
         this.fileList = fileList;
         this.serverStateChange = serverStateChange;
+        this.activePeers = registeredPeers;
     }
 
     public void run() {
@@ -44,18 +46,24 @@ public class WorkerRunnable implements Runnable {
                         clientSocket.getInputStream()));
 
                 receivedMSG = in.readLine();                // Client should automatically send it's info to the server
+                System.out.println(receivedMSG);
                 parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);  // Break up messages into commands separated by "'#"
                 if(parsedInput.length == 3 && parsedInput[0].equals("new")) {
-                    clientID = new ClientObject(parsedInput[0], parsedInput[1]);
-                    clientList.add(clientID);                   // Add the new client to the Client list.
+                    if(activePeers.get(0) > 2)
+                    {
+                        output.write("rejected".getBytes());
+                    }
+                    else {
+                        output.write("accepted".getBytes());
+                        clientID = new ClientObject(parsedInput[0], parsedInput[1]);
+                        clientList.add(clientID);                   // Add the new client to the Client list.
+                    }
                 }
-               // while(!receivedMSG.equals("exit")) {
-                //    receivedMSG = in.readLine();
-                 //   System.out.println(receivedMSG);
                 else {
                     if (receivedMSG.equals("show user list")) {
                         localOutput = requestManager.getClientListString(clientList);
                         output.write(localOutput.getBytes());
+                        output.flush();
                     } else if (receivedMSG.equals("show file list")) {
                         localOutput = requestManager.showFileList(fileList);
                         output.write(localOutput.getBytes());
