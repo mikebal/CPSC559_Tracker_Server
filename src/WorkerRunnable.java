@@ -168,8 +168,8 @@ public class WorkerRunnable implements Runnable {
 
                     }
                     else if(parsedInput.length == 3) {
-                        if (parsedInput[2].equals("joining")){
-                            clientID = new ClientObject(parsedInput[0], parsedInput[1]);
+                        if (parsedInput[0].equals("new")){
+                            clientID = new ClientObject(parsedInput[1], parsedInput[2]);
                             clientList.add(clientID);
 
                             if(serverStateChange.getDisconnectedClients().contains(clientID))
