@@ -25,9 +25,9 @@ public class Updater extends Thread
 	public void sendRecurringUpdate()  
 	{
 		System.out.println("in sendRecurringUpdate()");
-		try{
 			for(int i = 0; i < serverList.size(); i++)
 			{
+				try{
 				Socket sock = new Socket(InetAddress.getByName(serverList.get(i).get_IP_Address()), serverList.get(i).getPort());
 				System.out.println("sending update to: " + serverList.get(i).get_IP_Address() + " " + serverList.get(i).getPort());
 				PrintWriter printWriter = new PrintWriter(sock.getOutputStream(), true);
@@ -38,11 +38,11 @@ public class Updater extends Thread
 				outObj = new ObjectOutputStream(sock.getOutputStream());	
 				outObj.writeObject(update);
 				outObj.flush();
-				sock.close();		
+				sock.close();
+				}
+				catch(IOException e){
+					
+				}	
 			}
-		}
-		catch(IOException e){
-			//e.printStackTrace();
-		}
 	}
 }
