@@ -67,7 +67,7 @@ public class WorkerRunnable implements Runnable {
                         output.write(localOutput.getBytes());
                         System.out.println(localOutput);
                         output.flush();
-                    } else if (receivedMSG.equals("show file list")) {
+                    } else if (receivedMSG.equals("get file list")) {
                         localOutput = requestManager.showFileList(fileList) + "\n";
                         output.write(localOutput.getBytes());
                     } else if (receivedMSG.contains("'#")) {
