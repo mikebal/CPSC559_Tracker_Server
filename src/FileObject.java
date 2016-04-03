@@ -51,4 +51,15 @@ public class FileObject {
         this.seeders.add(fileHost);
         return fileHost;
     }
+    public String getAllPeersWithFile()
+    {
+        String hostList = "";
+
+        for(int i = 0; i < this.seeders.size(); i++)
+        {
+            hostList += seeders.get(i).get_Client_info() + "'#";
+        }
+        getFileSeeder_with_roundRobin();
+        return hostList;
+    }
 }

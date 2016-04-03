@@ -42,7 +42,7 @@ public class RequestManager {
         for(int i = 0; i < fileList.size(); i++)
         {
             if(fileList.get(i).getFileName().equals(fileName))
-                response = fileList.get(i).getFileSeeder_with_roundRobin().get_Client_info() + "\n";
+                response = fileList.get(i).getAllPeersWithFile() + "\n";
         }
         System.out.println(response);
         return response;
