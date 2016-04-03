@@ -57,7 +57,7 @@ public class WorkerRunnable implements Runnable {
                     else {
                         output.write("accepted".getBytes());
                         System.out.println("Accepted Connection " + (clientList.size() + 1 ) + "/" + MAX_CONNECTIONS);
-                        clientID = new ClientObject(parsedInput[0], parsedInput[1]);
+                        clientID = new ClientObject(parsedInput[1], parsedInput[2]);
                         clientList.add(clientID);                   // Add the new client to the Client list.
                     }
                 }
@@ -65,9 +65,10 @@ public class WorkerRunnable implements Runnable {
                     if (receivedMSG.equals("show user list")) {
                         localOutput = requestManager.getClientListString(clientList);
                         output.write(localOutput.getBytes());
+                        System.out.println(localOutput);
                         output.flush();
                     } else if (receivedMSG.equals("show file list")) {
-                        localOutput = requestManager.showFileList(fileList);
+                        localOutput = requestManager.showFileList(fileList) + "\n";
                         output.write(localOutput.getBytes());
                     } else if (receivedMSG.contains("'#")) {
                         parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);
