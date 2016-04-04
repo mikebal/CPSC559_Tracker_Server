@@ -19,7 +19,7 @@ public class RedirectClient {
     try
     {
         //create a socket
-        clientSocket = new Socket(ipAddress, 9000);
+        clientSocket = new Socket(address, port);
         try
         {
             //get the input and output streams

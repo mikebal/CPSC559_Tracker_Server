@@ -1,10 +1,11 @@
 import java.util.ArrayList;
+import java.io.*;
 
 /**
  * Created by Michael on 3/2/2016.
  *
  */
-public class FileObject {
+public class FileObject implements Serializable {
     private String fileName;
     private ArrayList<ClientObject> seeders = new ArrayList<>();
     //String Hash;  // Possible use to ensure file is the same
@@ -13,11 +14,22 @@ public class FileObject {
         this.fileName = fileName;
         seeders.add(clientObject);
     }
+    public FileObject(String fileName, ArrayList<ClientObject> seeders){
+         this.fileName = fileName;
+         this.seeders = seeders;
+    }
     public String getFileName(){
         return this.fileName;
     }
     public void addSeeder(ClientObject newSeeder){
-        seeders.add(newSeeder);
+        if(!seeders.contains(newSeeder))
+            seeders.add(newSeeder);
+    }
+    public void removeSeeder(ClientObject oldSeeder){
+        seeders.remove(oldSeeder);
+    }
+    public boolean hasSeeders(){
+        return seeders.size() > 0;
     }
 
 
@@ -61,5 +73,11 @@ public class FileObject {
         }
         getFileSeeder_with_roundRobin();
         return hostList;
+    }
+
+
+    public ArrayList<ClientObject> getSeeders()
+    {
+        return this.seeders;
     }
 }

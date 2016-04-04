@@ -17,14 +17,19 @@ public class MultiThreadedServer implements Runnable {
     private ArrayList<FileObject> fileList;
     private boolean isClientServer;
     private BackupComObject serverStatusChanges;
+    private Updater updater;
+    boolean acceptClients;
 
-    public MultiThreadedServer(int port, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, boolean isClientServer, BackupComObject backupObject, ArrayList<ClientObject> serverList) {
+    public MultiThreadedServer(int port, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, boolean isClientServer, BackupComObject backupObject, ArrayList<ClientObject> serverList, boolean acceptClients) {
         this.serverPort = port;
         this.clientList = clientList;
         this.fileList = fileList;
         this.isClientServer = isClientServer;
         this.serverStatusChanges = backupObject;
         this.serverList = serverList;
+        this.acceptClients = acceptClients;
+
+
     }
     public int getOpenPort(){
         return serverPort;
@@ -48,11 +53,10 @@ public class MultiThreadedServer implements Runnable {
                         "Error accepting client connection", e);
             }
             if(!isClientServer) {
-                    new Thread(
-                            new WorkerRunnable(
-                                    clientSocket, "Multithreaded Server", clientList, fileList, serverStatusChanges)
-                    ).start();
-
+                new Thread(
+                        new WorkerRunnable(
+                                clientSocket, "Multithreaded Server", clientList, fileList, serverStatusChanges, serverList, acceptClients)
+                ).start();
             }
             else{
                 new Thread(
@@ -74,6 +78,7 @@ public class MultiThreadedServer implements Runnable {
         this.isStopped = true;
         try {
             this.serverSocket.close();
+            updater.stop();
         } catch (IOException e) {
             throw new RuntimeException("Error closing server", e);
         }
@@ -83,6 +88,7 @@ public class MultiThreadedServer implements Runnable {
         try {
             this.serverSocket = new ServerSocket(this.serverPort);
            } catch (IOException e) {
+           // throw new RuntimeException("Cannot open port 8080", e);
             this.serverPort++;
             openServerSocket();
         }
