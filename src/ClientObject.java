@@ -3,11 +3,12 @@ import java.io.*;
 /**
  * Created by Michael on 3/2/2016.
  *
+ * This is a simple object used to store connection infomation about Clients or other Servers
  */
 public class ClientObject implements Serializable{
     private String IP_Address;
     private String port;
-    private static final String SPECIAL_BREAK_SYMBOL = "'#";
+    private static final String SPECIAL_BREAK_SYMBOL = "'#";  // Messages are parsed on this character
 
     public ClientObject(String ip, String port){
         this.IP_Address = ip;
@@ -18,6 +19,11 @@ public class ClientObject implements Serializable{
         return this.IP_Address;
     }
 
+    /**
+     * Function: get_Client_info
+     * Purpose: Get the IP and Port in a readable and parsable format
+     * @return String (format <IP Address><'#><PORT>
+     */
     public String get_Client_info(){
         String info = this.IP_Address;
         info += SPECIAL_BREAK_SYMBOL;

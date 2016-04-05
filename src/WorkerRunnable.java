@@ -1,6 +1,3 @@
-/**
- * Created by Michael on 2/23/2016.
- */
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -18,8 +15,7 @@ public class WorkerRunnable implements Runnable {
     private ArrayList<ClientObject> clientList;
     private volatile ArrayList<FileObject> fileList;
     private BackupComObject serverStateChange;
-    private ArrayList<Integer> activePeers;
-    private final int MAX_CONNECTIONS = 2;
+    private final int MAX_CONNECTIONS = 1;
     private ObjectInputStream objectInputStream;
     private BackupComObject update;
     private ArrayList<ClientObject> serverList;
@@ -39,14 +35,12 @@ public class WorkerRunnable implements Runnable {
         ClientObject clientID = null;
         FileListManager fileListManager = new FileListManager(fileList);
 
-
         try {
 
             InputStream input = clientSocket.getInputStream();
             OutputStream output = clientSocket.getOutputStream();
             String receivedMSG = "";
             String response;
-            String str;
             String[] parsedInput;
             RequestManager requestManager = new RequestManager();
             String localOutput;
@@ -129,73 +123,79 @@ public class WorkerRunnable implements Runnable {
 
                     System.out.println("My files after update: ");
                     showFiles();
-                }
+                }// end of if( update )
 
-                else{
-
-                if(receivedMSG.equals("show user list"))
+                /**
+                 *  The following section of code contained within the else statment manages and
+                 *  responds to request received from an 'assumed' client
+                 */
+                else  // Handle requests originating from clients
                 {
-                    localOutput = requestManager.getClientListString(clientList);
-                    output.write(localOutput.getBytes());
-                }
-                else if(receivedMSG.equals("show file list"))
-                {
-                    localOutput = requestManager.showFileList(fileList);
-                    output.write(localOutput.getBytes());
-                }
-                else if(receivedMSG.contains("'#")) {
-                    parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);
-
-                    if(parsedInput.length == 2) {
-                        if (parsedInput[0].equals("get")) {
-                            response = requestManager.clientRequestGet(parsedInput[1], fileList);
-                            output.write(response.getBytes());
-                        }
+                    if(receivedMSG.equals("show user list"))    // Request show user list outputs the userlist both on the server and sends it to the requesting client
+                    {
+                        localOutput = requestManager.getClientListString(clientList);
+                        output.write(localOutput.getBytes());
+                        System.out.println(localOutput);
+                        output.flush();
                     }
-                    else if(parsedInput.length == 3 && parsedInput[0].equals("leave")){
-                        requestManager.clientRequestLeave(new ClientObject(parsedInput[1], parsedInput[2]),  fileList);
-                        System.out.println("my files after leave: ");
-                        showFiles();
-                        serverStateChange.addtoDisconnectedClients(new ClientObject(parsedInput[1], parsedInput[2]));
-
-                        ListIterator<FileObject> itr = serverStateChange.getNewFileList().listIterator();
-                        while(itr.hasNext())
+                    else if (receivedMSG.equals("get file list"))  // Client request names of all the files that Clients are sharing
+                    {
+                        localOutput = requestManager.showFileList(fileList) + "\n";
+                        output.write(localOutput.getBytes());
+                    }
+                    else if(receivedMSG.contains("'#"))     // If the message has the character pair '# it is separated on that symbole
+                    {
+                        parsedInput = receivedMSG.split(SPECIAL_BREAK_SYMBOL);
+                        if(parsedInput.length == 2)     // Design document show that the only message with two parameters is get request
                         {
-                            FileObject file = itr.next();
-                            ArrayList<ClientObject> seeders = file.getSeeders();
-                            seeders.remove(new ClientObject(parsedInput[1], parsedInput[2]));
-                            if(seeders.size() == 0)
-                                itr.remove();
-                        }
-
-                    }
-                    else if(parsedInput.length == 3) {
-                        if (parsedInput[0].equals("new")){
-                            clientID = new ClientObject(parsedInput[1], parsedInput[2]);
-                            clientList.add(clientID);
-
-                            if(serverStateChange.getDisconnectedClients().contains(clientID))
-                                serverStateChange.getDisconnectedClients().remove(clientID);
-
-                            PrintWriter pw = new PrintWriter(output, true);
-                            if(acceptClients == false)
+                            if (parsedInput[0].equals("get"))      // Received message format:  <request><filename>
                             {
-                                pw.println("refuse");
-                                System.out.println("refuse");
+                                response = requestManager.clientRequestGet(parsedInput[1], fileList);
+                                output.write(response.getBytes());
                             }
-                            else{
-                                pw.println("accept");
-                                System.out.println("accept");
+                        }
+                        else if(parsedInput.length == 3 && parsedInput[0].equals("leave"))
+                        {
+                            requestManager.clientRequestLeave(new ClientObject(parsedInput[1], parsedInput[2]),  fileList, clientList); // Remove client as a host of files, remove from the peerlist
+                            System.out.println("my files after leave: ");
+                            showFiles();
+                            serverStateChange.addtoDisconnectedClients(new ClientObject(parsedInput[1], parsedInput[2]));
+
+                            ListIterator<FileObject> itr = serverStateChange.getNewFileList().listIterator();
+                            while(itr.hasNext())
+                            {
+                                FileObject file = itr.next();
+                                ArrayList<ClientObject> seeders = file.getSeeders();
+                                seeders.remove(new ClientObject(parsedInput[1], parsedInput[2]));
+                                if(seeders.size() == 0)
+                                    itr.remove();
                             }
 
                         }
-                        /*
-                        clientID = new ClientObject(parsedInput[0], parsedInput[1]);
-                        clientList.add(clientID);                   // Add the new client to the Client list.
+                        else if(parsedInput.length == 3)  // If message is <String("new")><IP Address> <Int(port)>
+                        {
+                            if (parsedInput[0].equals("new"))
+                            {
+                                PrintWriter pw = new PrintWriter(output, true);
+                                if(acceptClients && clientList.size() < MAX_CONNECTIONS)    // IF the server is open, and has space in its list.
+                                {
+                                    clientID = new ClientObject(parsedInput[1], parsedInput[2]);  // ClientObject(IP Address, Port)
+                                    clientList.add(clientID);
 
-                        if(serverStateChange.getDisconnectedClients().contains(clientID))
-                            serverStateChange.getDisconnectedClients().remove(clientID);*/
-                    }
+                                    if(serverStateChange.getDisconnectedClients().contains(clientID))
+                                        serverStateChange.getDisconnectedClients().remove(clientID);
+
+                                    pw.println("accept");
+                                    System.out.println("accept");
+                                }
+                                else    // if there is no room for the client to join the server, send a message indicating the rejection
+                                {
+                                    pw.println("refuse");
+                                    System.out.println("refuse");
+                                }
+
+                            }
+                        }
                     else if(parsedInput.length == 4 && parsedInput[0].equals("add")) {
                             requestManager.clientRequestAdd(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3]), fileList);
                         //fileListManager.addFileToList(new FileObject(parsedInput[1], new ClientObject(parsedInput[2], parsedInput[3])), new ClientObject(parsedInput[2], parsedInput[3]));
@@ -208,7 +208,7 @@ public class WorkerRunnable implements Runnable {
                     else if(parsedInput.length >=4 && parsedInput[0].equals("new-sibling-trackers"))
                     {
                         ArrayList<TrackerTuple> trList = new ArrayList<TrackerTuple>();
-                        //So many Cats'#3'#192.168.56.1'#9010'#192.168.56.1'#9011'#192.168.56.1'#9012'#
+
                         for(int i = 2; i < parsedInput.length; i+=2)
                         {
                             if(i + 1 < parsedInput.length)

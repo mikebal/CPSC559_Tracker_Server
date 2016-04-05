@@ -1,11 +1,12 @@
-/**
- * Created by Michael on 2/23/2016.
- */
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * This class initializes a server for the Clients to connect to, once a connection is established it is handed to WorkerRunnable class
+ * that does the work.
+ */
 public class MultiThreadedServer implements Runnable {
 
     protected int serverPort = 9000;

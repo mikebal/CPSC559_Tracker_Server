@@ -6,6 +6,10 @@ import java.util.ArrayList;
  *
  * @author Michael Balcerzak
  * @version 1.0 March 5, 2016.
+ *
+ *  This is where code relating to Tracker to Tracker communication should have gone so that it would be readable,
+ *  not cause conflicts when merging.
+ *
  */
 
 public class BackupServer implements Runnable {
@@ -16,7 +20,6 @@ public class BackupServer implements Runnable {
     private ArrayList<ClientObject> serverList;
     private ArrayList<ClientObject> clientList;
     private ArrayList<FileObject> fileList;
-    private BackupComObject serverChangeList;
 
 
     public BackupServer(Socket clientSocket, String serverText, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, BackupComObject serverStateChange,
@@ -26,7 +29,7 @@ public class BackupServer implements Runnable {
         this.clientList = clientList;
         this.serverList = backupServers;
         this.fileList = fileList;
-        this.serverChangeList = serverStateChange;
+
     }
 
     public void run() {

@@ -7,10 +7,19 @@ import java.util.Scanner;
 
 /**
  * Created by Michael on 2/23/2016.
+ *
+ *  This is  a simple object that creates a connection to the RedirectServer to send a single message.
  */
 public class RedirectClient {
+    int port = 9000;
+    String address = "localhost";
 
-    public void connectToRedirect(String message, String ipAddress){
+    public RedirectClient(String address, int port){
+        this.port = port;
+        this.address = address;
+    }
+    public void connectToRedirect(String message){
+
     Socket clientSocket = null;
     InputStream is           = null;
     OutputStream os           = null;
