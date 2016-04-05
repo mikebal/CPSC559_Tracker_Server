@@ -18,7 +18,7 @@ public class RedirectClient {
         this.port = port;
         this.address = address;
     }
-    public void connectToRedirect(String message){
+    public void connectToRedirect(String message, boolean initialConnection){
 
     Socket clientSocket = null;
     InputStream is           = null;
@@ -37,12 +37,13 @@ public class RedirectClient {
             Scanner in = new Scanner(is);
             PrintWriter out  = new PrintWriter(os, true /* autoflush */);
             String message_IN;
+            if(initialConnection) {
+                out.println("New Server");
+                message_IN = in.nextLine();
 
-            out.println("New Server");
-            message_IN = in.nextLine();
-
-            System.out.println("Message from (RedirectClient): " + message_IN);
-            System.out.println("Sending server info...");
+                System.out.println("Message from (RedirectClient): " + message_IN);
+                System.out.println("Sending server info...");
+            }
             out.println(message);
         }
         finally

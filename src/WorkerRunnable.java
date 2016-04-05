@@ -15,13 +15,14 @@ public class WorkerRunnable implements Runnable {
     private ArrayList<ClientObject> clientList;
     private volatile ArrayList<FileObject> fileList;
     private BackupComObject serverStateChange;
-    private final int MAX_CONNECTIONS = 1;
+    private final int MAX_CONNECTIONS = 10;
     private ObjectInputStream objectInputStream;
     private BackupComObject update;
     private ArrayList<ClientObject> serverList;
     private boolean acceptClients;
+    private ClientObject redirectInfo;
 
-    public WorkerRunnable(Socket clientSocket, String serverText, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, BackupComObject serverStateChange, ArrayList<ClientObject> serverList, boolean acceptClients) {
+    public WorkerRunnable(Socket clientSocket, String serverText, ArrayList<ClientObject> clientList, ArrayList<FileObject> fileList, BackupComObject serverStateChange, ArrayList<ClientObject> serverList, boolean acceptClients, ClientObject redirectInfo) {
         this.clientSocket = clientSocket;
         this.serverText = serverText;
         this.clientList = clientList;
@@ -29,6 +30,7 @@ public class WorkerRunnable implements Runnable {
         this.serverStateChange = serverStateChange;
         this.serverList = serverList;
         this.acceptClients = acceptClients;
+        this.redirectInfo = redirectInfo;
     }
 
     public void run() {
@@ -171,6 +173,9 @@ public class WorkerRunnable implements Runnable {
                                     itr.remove();
                             }
 
+                            RedirectClient updateRedirect = new RedirectClient(redirectInfo.get_IP_Address(), redirectInfo.getPort());
+                            updateRedirect.connectToRedirect("update'#" + serverText + "'#-1", false);
+
                         }
                         else if(parsedInput.length == 3)  // If message is <String("new")><IP Address> <Int(port)>
                         {
@@ -187,6 +192,9 @@ public class WorkerRunnable implements Runnable {
 
                                     pw.println("accept");
                                     System.out.println("accept");
+
+                                    RedirectClient updateRedirect = new RedirectClient(redirectInfo.get_IP_Address(), redirectInfo.getPort());
+                                    updateRedirect.connectToRedirect("update'#" + serverText + "'#1", false);
                                 }
                                 else    // if there is no room for the client to join the server, send a message indicating the rejection
                                 {

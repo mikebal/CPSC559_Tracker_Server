@@ -52,7 +52,8 @@ public class Main {
          *
          */
 
-        MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, serverList, acceptClients);
+        ClientObject redirectInfo = new ClientObject(redirectServerAddress, String.valueOf(redirectPort));
+        MultiThreadedServer server = new MultiThreadedServer(startingPort, clientList, fileList, false, serverStateChanges, serverList, acceptClients, redirectInfo, args[0]);
         new Thread(server).start();
         Thread.sleep(1000);
         startingPort = server.getOpenPort();
@@ -67,7 +68,7 @@ public class Main {
 
         String newServerMessage = networkManager.generateTrackerAdvertisment(server.getOpenPort());
         RedirectClient listServerCommunicator = new RedirectClient(redirectServerAddress, redirectPort);
-        listServerCommunicator.connectToRedirect(newServerMessage);
+        listServerCommunicator.connectToRedirect(newServerMessage, true);
 
         Updater updater = new Updater(5000, serverList, serverStateChanges);
         updater.start();
